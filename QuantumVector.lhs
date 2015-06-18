@@ -688,29 +688,36 @@ in:
 
 A-1 A | x > = | x >
 
--- Haskell example
+```haskell
 label' >< (label 0 >< x) == x
-where
-x = Ket 1 +> 10 |> Ket 7
+    where
+        x = Ket 1 +> 10 |> Ket 7
+
 ==> True
+```
 
 Once again, notice the omnipresent closure operator in Haskell implementation.
 Tempting as it might be to implement the above example as
 
--- Do not do it in Haskell!!!
+```bad-haskell
 (label' . label 0) >< x == x
-where
-x = Ket 1 +> 10 |> Ket 7
+    where
+        x = Ket 1 +> 10 |> Ket 7
+
 ==> True
+```
 
 this is not a recommended way. Although this example would work, but a similar
 example for *rotation* operations would fail in a spectacular way. The correct
 way is to insert the closure operator between two rotations:
 
+```haskell
 rot' >< (rot >< x) == x
-where
-x = Ket 1 +> 10 |> Ket 2
+    where
+        x = Ket 1 +> 10 |> Ket 2
+
 ==> True
+```
 
 where the inverse operator *rot'* is defined below:
 
@@ -732,11 +739,13 @@ different bases), form a transformation matrix Akl'.
 
 In Haskell this matrix is formed as
 
+```psuedo-haskell
 k <> a >< l'
-where
-k  = ... :: Bra b
-l' = ... :: Ket a
-a  = ... :: Ket a -> Ket b
+    where
+        k  = ... :: Bra b
+        l' = ... :: Ket a
+        a  = ... :: Ket a -> Ket b
+```
 
 Adjoint operator
 ----------------
@@ -754,20 +763,25 @@ products
 holds for every vector | u \> and | x \>. In Haskell notation the above can be
 written as:
 
+```psuedo-haskell
 (toBra (b >< u) <> x) == toBra u <> a >< x
-where
-a = ... :: Ket a -> Ket b
-b = ... :: Ket b -> Ket a
-x = ... :: Ket a
-u = ... :: Ket b
+    where
+        a = ... :: Ket a -> Ket b
+        b = ... :: Ket b -> Ket a
+        x = ... :: Ket a
+        u = ... :: Ket b
+```
 
 For example, the operator *rot'* is adjoint to operator *rot*
 
+```haskell
 (toBra (rot' >< u) <> x) == (toBra u <> rot >< x)
-where
-x = Ket 1 +> 10 |> Ket 2
-u = Ket (1,1) +> 4 |> Ket (1,2)
+    where
+        x = Ket 1 +> 10 |> Ket 2
+        u = Ket (1,1) +> 4 |> Ket (1,2)
+
 ==> True
+```
 
 It can be shown that
 
@@ -794,12 +808,14 @@ transformations are called unitary operators.
 The example of this is rotation transformation, which indeed preserves the norm
 of any vector x, as shown in this Haskell example
 
+```haskell
 (toBra u <> u) == (toBra x <> x)
-where
-u = rot >< x
-x = Ket 1 +> 10 |> Ket 2
+    where
+        u = rot >< x
+        x = Ket 1 +> 10 |> Ket 2
 
 ==> True
+```
 
 Inverse and adjoint operators of unitary operators are equal
 
@@ -827,8 +843,10 @@ Notice however, that this relation holds only for the vectors in the same
 representation, since in general the operators A and A^+^ have distinct
 signatures, unless types a, b are the same:
 
+```haskell
 a  :: Ket a -> Ket b -- operator A
 a' :: Ket b -> Ket a -- operator A+
+```
 
 Elements of hermitian matrices must therefore satisfy:
 
@@ -840,14 +858,16 @@ Our example operator *rot* is not hermitian, since it describes transformation
 from one basis to another. But here is a simple example of a hermitian operator,
 which multiplies any ket by scalar 4. It satisfies our definition:
 
+```haskell
 (toBra (a >< u) <> x) == (toBra u <> a >< x)
-where
-a v = 4 |> v
+    where
+        a v = 4 |> v
 
 x = Ket 1 +> Ket 2
 u = Ket 2
 
 ==> True
+```
 
 Here is a short quote from [3].
 
@@ -909,63 +929,6 @@ See module Momenta for practical example of tensor products of vector spaces.
 
 > instance (Show a, Show b) => Show (Tuple a b) where
 >     showsPrec n (a :* b) = showsPrec n a . showString "; " . showsPrec n b
-
-
-Messing Around
-==============
-
-Annihilation Operator
----------------------
-
-Ladder operators:
-
-> class Integral a => Ladderable a where
->   ladder :: a -> (a -> Scalar) -> Ket a -> Ket a
->   an :: Ket a -> Ket a
->   cr :: Ket a -> Ket a
->   c :: a
->   coeff_gen :: a -> Scalar
-
->   ladder c coeff_gen (Ket kt) = (coeff_gen kt) |> Ket (kt + c)
->   cr = ladder c coeff_gen
->   an = ladder (-c) coeff_gen
-
-> data QHO = QHO
-
-> instance Ladderable (QHO) where
->   c = 1
-
-N cr | n > = (n + c) cr | n >
-
-> n :: Integral a => Ket a -> Ket a
-> n (Ket kt) = (fromIntegral kt) |> Ket kt
-
-> an :: Integral a => Ket a -> Ket a
-> an (Ket kt)
->       | kt == 0 = KetZero
->       | otherwise = sqrt (fromIntegral kt) |> Ket (kt - 1)
-
-> cr :: Integral a => Ket a -> Ket a
-> cr (Ket kt) = sqrt (fromIntegral kt + fromIntegral 1) |> Ket (kt + 1)
-
-
-> ladder :: Integral a => a -> (a -> a -> Scalar) -> Ket a -> Ket a
-> ladder shift eval (Ket kt) = coeff |> (Ket new_kt)
->   where
->       new_kt = kt + shift
->       coeff = eval shift kt
-
-> qho_an_eval :: Integral a => a -> a -> Scalar
-> qho_an_eval shift n = sqrt (fromIntegral n)
-
-> qho_an :: Integral a => Ket a -> Ket a
-> qho_an kt = ladder 1 qho_an_eval kt
-
-
-rot :: Ket Int -> Ket (Int, Int)
-rot (Ket 1) = normalize $ Ket (1,1) +> Ket (1,2)
-rot (Ket 2) = normalize $ Ket (1,1) +> (-1) |> Ket (1,2)
-rot (Ket _) = error "exceeded space dimension"
 
 
 References
