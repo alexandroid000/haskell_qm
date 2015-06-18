@@ -96,7 +96,6 @@ Infix operators
 Haskell requires that fixities of infix operators are defined at the top of the
 module. So here they are. They are to be explained later.
 
-
 > module QuantumVector where
 > import Data.Complex -- our Scalar is Complex Double
 > import Data.List (nub)
@@ -104,19 +103,14 @@ module. So here they are. They are to be explained later.
 > infixl 7 *>  -- tensor product of two kets
 > infixl 7 <*  -- tensor product of two bras
 
-> -- scalar-ket multiplication
-> infix 6 |>
-> -- scalar-bra multiplication
-> infix 6 <|
-
+> infix 6 |>   -- scalar-ket multiplication
+> infix 6 <|   -- scalar-bra multiplication
 
 > infixl 5 +>  -- sum of two kets
 > infixl 5 <+  -- sum of two bras
 
-
 > infix 4 <>  -- inner product
 > infix 5 ><  -- closure
-
 
 
 Vector space
