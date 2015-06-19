@@ -23,6 +23,9 @@ order"](http://learnyouahaskell.com/higher-order-functions#higher-orderism) and
 skim the next section on maps and filters.  Don't worry if you don't understand
 every little thing in these guides, but try to get the main idea.
 
+If you have no idea how to start running Haskell code, [go
+here](http://learnyouahaskell.com/introduction#what-you-need).
+
 Implementing Quantum Systems
 ----------------------------
 
