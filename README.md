@@ -17,11 +17,11 @@ that before starting on the quantum applications.
 Also, before getting started on quantum mechanics, look through [this
 explanation of types in
 Haskell](http://www.learnyouahaskell.com/types-and-typeclasses), at least the
-first section ("Believe the type"). Also, check out [this explanation of higher
-order
-functions](http://learnyouahaskell.com/higher-order-functions#higher-orderism)
-in Haskell as we will be using quite a few of these. Don't worry if you don't
-understand every little thing in these guides, but try to get the main idea.
+first section ("Believe the type"). Also, check out [the section "some
+higher-orderism is in
+order"](http://learnyouahaskell.com/higher-order-functions#higher-orderism) and
+skim the next section on maps and filters.  Don't worry if you don't understand
+every little thing in these guides, but try to get the main idea.
 
 Implementing Quantum Systems
 ----------------------------
