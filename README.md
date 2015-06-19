@@ -99,23 +99,24 @@ QuantumVector> Ket 3 *> Ket 2 *> Ket 5
 |3; 2; 5>
 ```
 
-One important part of the formalism in QuantumVector is the closure operator,
-which allows us to apply operators to bras and kets: A | x \> = | y \>. To
-implement this operation, we will define a general closure operator, ><, which
-works by inserting the identity (| k \> \< k |) between A and x, where k is the
-basis of x. Look at the definition of the closure operator:
+One important part of the formalism in `QuantumVector` is the closure operator,
+which allows us to apply operators to bras and kets, like so: `A | x \> = | y \>`
+
+To implement this operation, we will define a general closure operator, `><`,
+which works by inserting the identity (`| k \> \< k |`) between `A` and `x`,
+where `k` is the basis of `x`. Look at the definition of the closure operator:
 
 ```haskell
-> closure :: (DiracVector a, DiracVector b) => (a -> b) -> a -> b
-> closure operator x =
->    compose' (components x) (map operator (basis x))
->      where
->         compose' xs ks
->               | length xs == 0 = zero
->               | otherwise = foldl1 add (zipWith scale xs ks)
+closure :: (DiracVector a, DiracVector b) => (a -> b) -> a -> b
+closure operator x =
+   compose' (components x) (map operator (basis x))
+     where
+        compose' xs ks
+              | length xs == 0 = zero
+              | otherwise = foldl1 add (zipWith scale xs ks)
 
-> (><) :: (DiracVector b, DiracVector a) => (a -> b) -> a -> b
-> operator >< x = closure operator x
+(><) :: (DiracVector b, DiracVector a) => (a -> b) -> a -> b
+operator >< x = closure operator x
 ```
 
 The first line is the type signature. Type signatures are optional in Haskell,
@@ -134,8 +135,8 @@ break it down:
   `closure` returns. In our case, it's `b`, which is the type that the operator
   produces when it operates on and `a` type.
 
-So this type signature describes a function which takes an operator A, a vector
-x, and returns the result of A applied to x.
+So this type signature describes a function which takes an operator `A`, a vector
+`x`, and returns the result of `A` applied to `x`.
 
 The nitty-gritty of how we implement this in Haskell is less important, but we
 can see in the first line of the actual function definition that we separate out
