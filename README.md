@@ -3,23 +3,43 @@ title: Quantum Mechanics in Haskell
 ...
 
 
+Background Material
+-------------------
+
 Building on the work of Jan Skibinski and Jerzy Karczmarczuk, we hope to
 demonstrate how Quantum Systems may be intuitively built and simulated using the
 Haskell functional programming language. Many features of Haskell make it useful
-for scientific computation.
+for scientific computation. The file
+[scientific_computation.pdf](scientific_computation.pdf) talks about what
+makes Haskell useful for programming scientific systems, so skim through
+that before starting on the quantum applications.
+
+Also, before getting started on quantum mechanics, look through [this
+explanation of types in
+Haskell](http://www.learnyouahaskell.com/types-and-typeclasses), at least the
+first section ("Believe the type"). Also, check out [this explanation of higher
+order
+functions](http://learnyouahaskell.com/higher-order-functions#higher-orderism)
+in Haskell as we will be using quite a few of these. Don't worry if you don't
+understand every little thing in these guides, but try to get the main idea.
+
+Implementing Quantum Systems
+----------------------------
 
 The file [QuantumVector.lhs](QuantumVector.lhs) sets up basic Dirac notation for
 manipulating Quantum systems, which we will build on to demonstrate some simple
-systems. The file [scientific_computation.pdf](scientific_computation.pdf) talks
-about some other useful features of Haskell for programming scientific systems.
+systems. For the talk, we will review this module and answer any questions
+about it, then we will move on to representing the annihilation and creating
+operators in Haskell. We'll start by making them for the quantum harmonic
+oscillator, then move on towards generalizing them.
 
-The goal of using Haskell to build scientific systems is readability and
+The goal of using Haskell to build quantum systems is readability and
 usability. Haskell allows us to define the mathematics of the system we're
 setting up (a Hilbert space for quantum mechanics), using the notation we like
 (Dirac notation for quantum). This makes it easier to take our analytical
 reasoning about a system and apply it directly to the programs we create.
 
-Start by reading the [quantum vector](QuantumVector.lhs) file. Having the
+Start by looking through the [quantum vector](QuantumVector.lhs) file. Having the
 Haskell compiler installed will help a lot, as you can load the file into the
 interpreter (GHCi) and play around with the math a bit. With this file loaded,
 we can perform basic quantum math:
@@ -44,6 +64,9 @@ The math is a bit hard to read, because we can't use the normal symbols `+`,
 -   `<>` inner product
 -   `><` closure (apply operator)
 -   `a :+ b` complex number `a + bi`
+
+How to Use
+----------
 
 Below are some examples of how to use the Quantum Vector module. To use it,
 install `ghc` and `ghci` on your system (the Glasgow Haskell Compiler and the
@@ -99,6 +122,9 @@ QuantumVector> Ket 3 *> Ket 2 *> Ket 5
 |3; 2; 5>
 ```
 
+Example of Implementation
+-------------------------
+
 One important part of the formalism in `QuantumVector` is the closure operator,
 which allows us to apply operators to bras and kets, like so: `A | x \> = | y \>`
 
@@ -147,7 +173,3 @@ vector](QuantumVector.lhs) file defines a rotation operator and shows how to
 apply it with the closure operator, so take a look at that section ("Changing
 the representation").
 
-For the talk, we will review this module and answer any questions about it, then
-we will move on to representing the annihilation and creating operators in
-Haskell. We'll start by making them for the quantum harmonic oscillator, then
-move on towards generalizing them.
