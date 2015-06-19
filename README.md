@@ -142,9 +142,10 @@ The nitty-gritty of how we implement this in Haskell is less important, but we
 can see in the first line of the actual function definition that we separate out
 the `basis` and `components`, apply the operator to the basis of `x`, and then
 recompose the vector. The last two lines of the code block just redefine the
-`closure` function to look pretty, in the Dirac notation. The `QuantumVector`
-file defines a rotation operator and shows how to apply it with the closure
-operator, so take a look at that section ("Changing the representation").
+`closure` function to look pretty, in the Dirac notation. The [quantum
+vector](QuantumVector.lhs) file defines a rotation operator and shows how to
+apply it with the closure operator, so take a look at that section ("Changing
+the representation").
 
 For the talk, we will review this module and answer any questions about it, then
 we will move on to representing the annihilation and creating operators in
