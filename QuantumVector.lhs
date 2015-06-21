@@ -112,6 +112,13 @@ module. So here they are. They are to be explained later.
 > infix 4 <>  -- inner product
 > infix 5 ><  -- closure
 
+> infix 5 >-<
+> infix 5 >+<
+> infix 5 >*<
+
+infix 5 >*
+infix 4 *<
+
 
 Vector space
 ============
@@ -900,8 +907,8 @@ Lastly, here are show functions for pretty printing of Dirac vectors.
 
 > showsScalar :: (Show t, RealFloat t) => Int -> Complex t -> String -> String
 > showsScalar n x@(a :+ b)
->     | b == 0    = showsPrec n a . showString " "
->     | otherwise = showString "(" .showsPrec n x . showString ") "
+>     | b == 0    = showString " " . showsPrec n a
+>     | otherwise = showString " (" .showsPrec n x . showString ")"
 
 
 Data Tuple for tensor products
@@ -923,6 +930,49 @@ See module Momenta for practical example of tensor products of vector spaces.
 
 > instance (Show a, Show b) => Show (Tuple a b) where
 >     showsPrec n (a :* b) = showsPrec n a . showString "; " . showsPrec n b
+
+
+Messing Around
+==============
+
+> data Operator k b =
+>   OpIdent
+>   | Ket k :>-< Bra b
+>   | Operator k b :>+< Operator k b
+
+> (>-<) :: Ket a -> Bra b -> Operator a b
+> kt >-< br = kt :>-< br
+
+> (>+<) :: (Ord k, Ord b, Eq k, Eq b)
+>   => Operator k b -> Operator k b -> Operator k b
+> op1 >+< op2 = op1 :>+< op2
+> -- If correct, we could do this (possible speed up evaluation)
+> -- (k1 :>-< b1) >+< (k2 :>-< b2) = (k1 +> k2) >-< (b1 <+ b2)
+
+> (>*<) :: (Ord k1, Ord k2, Ord b1, Ord b2, Eq k1, Eq k2, Eq b1, Eq b2)
+>   => Operator k1 b1 -> Operator k2 b2 -> Operator (Tuple k1 k2) (Tuple b1 b2)
+> (k1 :>-< b1) >*< (k2 :>-< b2) = (k1 *> k2) >-< (b1 <* b2)
+
+> (>*) :: (Ord bi, Ord bf, Eq bi, Eq bf)
+>   => Operator bf bi -> Ket bi -> Ket bf
+> _              >* KetZero = KetZero
+> --OpIdent        >* x       = 
+> (op1 :>+< op2) >* x       = (op1 >* x) +> (op2 >* x)
+> (kts :>-< brs) >* x       = (brs <> x) |> kts
+
+> (*<) :: (Ord bi, Ord bf, Eq bi, Eq bf)
+>   => Bra bi -> Operator bi bf -> Bra bf
+> BraZero *< _              = BraZero
+> --x       *< OpIdent        = x
+> x       *< (op1 :>+< op2) = (x *< op1) <+ (x *< op2)
+> x       *< (kts :>-< brs) = (x <> kts) <| brs
+
+> instance (Show a, Show b, Ord a, Ord b, Eq a, Eq b)
+>   => Show (Operator a b) where
+>   showsPrec n OpIdent = showString "|I><I|"
+>   showsPrec n (op1 :>+< op2) =
+>       showsPrec n op1 . showString " >+< " . showsPrec n op2
+>   showsPrec n (k :>-< b) = showsPrec n k . showsPrec n b
 
 
 References
