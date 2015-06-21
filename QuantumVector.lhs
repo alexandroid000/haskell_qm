@@ -97,6 +97,7 @@ Haskell requires that fixities of infix operators are defined at the top of the
 module. So here they are. They are to be explained later.
 
 > module QuantumVector where
+> import Prelude hiding ((*>), (<*))
 > import Data.Complex -- our Scalar is Complex Double
 > import Data.List (nub)
 
